@@ -144,8 +144,14 @@ var _ = {};
 
   // Calls the method named by methodName on each value in the list.
   // Note: you will nead to learn a bit about .apply to complete this.
-  _.invoke = function(collection, functionOrKey, args) {
-  };
+ _.invoke = function(collection, functionOrKey, args) {
+    var args=Array.prototype.slice.call(arguments,2);
+    return _.map(collection,function(value){
+      return (typeof(functionOrKey)==='function' ? functionOrKey : value[functionOrKey]).apply(value,args);
+    })
+ };
+
+
 
   // Reduces an array or object to a single value by repetitively calling
   // iterator(previousValue, item) for each item. previousValue should be
@@ -161,6 +167,10 @@ var _ = {};
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
+    _.each(collection,function (value){
+      accumulator=iterator(accumulator,value);
+    });
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
