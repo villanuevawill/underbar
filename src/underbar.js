@@ -243,14 +243,23 @@ var _ = {};
         for (var key in value) {
             obj[key]=value[key];
         }
-    })
+    });
     return obj;
   }
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
-  };
+  var args=Array.prototype.slice.call(arguments,1);
+    _.each(args,function(value){
+        for (var key in value) {
+          if (!(key in obj)) {
+            obj[key]=value[key];
+          }
+        }
+    });
+    return obj;
+  }
 
 
   /**
@@ -276,7 +285,7 @@ var _ = {};
       if (!alreadyCalled) {
         // TIP: .apply(this, arguments) is the standard way to pass on all of the
         // infromation from one function call to another.
-        result = func.apply(this, arguments);
+        var result = func.apply(this, arguments);
         alreadyCalled = true;
       }
       // The new function always returns the originally computed result.
@@ -291,6 +300,12 @@ var _ = {};
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var storage={};
+    return function() {
+      var key = arguments[0];
+      return ((key in storage) ? storage[key] : (storage[key]=func.apply(this,arguments)));
+    }
+
   };
 
   // Delays a function for the given number of milliseconds, and then calls
