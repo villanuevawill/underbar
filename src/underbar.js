@@ -188,7 +188,18 @@ var _ = {};
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    // TIP: Try re-using reduce() here.
+    if (iterator===undefined) {
+      iterator=_.identity;
+    }
+    return _.reduce(collection, function(testresult, item) {
+      if (!testresult) {
+        return false;
+      } else if ( iterator(item)===null || iterator(item)===undefined ||iterator(item)===0 ||!iterator(item))  {
+        return false;
+      } else {
+        return true;
+      }
+    },true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
@@ -196,6 +207,8 @@ var _ = {};
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
   };
+
+
 
 
   /**
