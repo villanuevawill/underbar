@@ -372,8 +372,23 @@ var _ = {};
   // The new array should contain all elements of the multidimensional array.
   //
   // Hint: Use Array.isArray to check if something is an array
-  _.flatten = function(nestedArray, result) {
-  };
+_.flatten = function(array){
+
+  var newArray = [];
+  function routine(list){
+    _.each(list, function(val){
+      if (typeof val === 'object'){
+        routine(val)
+      } else {
+        newArray.push(val);
+      }
+    });
+  }
+  routine(array);
+  return newArray;
+};
+
+
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
