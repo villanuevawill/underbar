@@ -477,8 +477,34 @@ _.flatten = function(array){
   // Returns a function, that, when invoked, will only be triggered at most once
   // during a given window of time.
   //
-  // See the Underbar readme for details.
-  _.throttle = function(func, wait) {
-  };
 
+  //reviwewed code from annotated source
+  _.throttle = function(func, wait) {
+    var context, args, result;
+    var timeout = null;
+    var previous = 0;
+  
+    var later = function() {
+      previous = Date.now();
+      timeout = null;
+      result = func.apply(context, args);
+      context = args = null;
+    };
+    return function() {
+      var now = Date.now();
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      if (remaining <= 0) {
+        clearTimeout(timeout);
+        timeout = null;
+        previous = now;
+        result = func.apply(context, args);
+        context = args = null;
+      } else if (!timeout) {
+        timeout = setTimeout(later, remaining);
+      }
+      return result;
+    };
+  };
 }).call(this);
