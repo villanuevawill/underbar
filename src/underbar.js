@@ -405,6 +405,23 @@ return result;
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+    var finalLength = _.reduce(arguments,function(a,b){
+      if (a < b.length) {
+        return b.length;
+      }
+      return a;
+    },0);
+    var indexLength = arguments.length;
+    var result =[];
+    for (var i=0; i < indexLength; i++) {
+      result.push([]);
+    }
+    _.each(arguments, function(value){
+       _.each(result, function(value1, index) {
+        value1.push(value[index]);
+       });
+    });
+    return result;
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -412,26 +429,34 @@ return result;
   //
   // Hint: Use Array.isArray to check if something is an array
 _.flatten = function(array){
-
   var newArray = [];
-  function routine(list){
-    _.each(list, function(val){
-      if (typeof val === 'object'){
-        routine(val)
-      } else {
-        newArray.push(val);
+
+  var generate = function(array){
+    _.each(array, function(value){
+      if (Array.isArray(value)){
+        generate(value);
+      }else{
+        newArray.push(value);
       }
     });
   }
-  routine(array);
+  generate(array);
   return newArray;
 };
-
 
 
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    var newArray = [];
+    var args = Array.prototype.slice.call(arguments);
+    var searchIn = _.flatten(args.slice(1));
+    _.each(args[0],function(value){
+      if (_.contains(searchIn, value)){
+        newArray.push(value);
+      }
+      });
+    return newArray;
   };
 
   // Take the difference between one array and a number of other arrays.
